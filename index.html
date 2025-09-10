@@ -1,58 +1,47 @@
-LINEAR SEARCH VS BINARY SEARCH
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Linear vs Binary Search — Simple Visualization</title>
+  <title>Linear vs Binary Search — Visualization</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 40px;
-    }
-    h2 { margin-bottom: 20px; }
-    input, button { margin: 5px; }
-    p { margin: 10px 0; }
-    #arrayContainer { margin-top: 20px; }
-    .cell {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      border: 1px solid black;
-      margin: 2px;
-      text-align: center;
-      vertical-align: middle;
-      line-height: 40px;
-    }
-    .checking { background: yellow; }
-    .checked { background: red; }
-    .found { background: lightgreen; }
+    .checking { background-color: #facc15 !important; } /* Yellow */
+    .checked { background-color: #f87171 !important; }  /* Red */
+    .found { background-color: #4ade80 !important; }    /* Green */
   </style>
 </head>
-<body>
-  <div>
-    <h2>Searching Sorted List</h2>
+<body class="min-h-screen bg-gray-50 flex flex-col items-center p-6">
+  <div class="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-6 text-center">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">🔍 Searching Sorted List</h2>
 
-    <div style="margin-bottom: 20px;">
-      <input id="targetInput" type="number" placeholder="Enter target" />
-      <button id="linearBtn">Linear Search</button>
-      <button id="binaryBtn">Binary Search</button>
-      <button id="resetBtn">Reset</button>
+    <!-- Input & Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mb-6">
+      <input id="targetInput" type="number" placeholder="Enter target" 
+        class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 outline-none w-48" />
+      <button id="linearBtn" 
+        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow">
+        Linear Search
+      </button>
+      <button id="binaryBtn" 
+        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow">
+        Binary Search
+      </button>
+      <button id="resetBtn" 
+        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow">
+        Reset
+      </button>
     </div>
 
-    <p>Searching For: <span id="statusTarget"></span></p>
-    <p>Result: <span id="statusResult"></span></p>
-    <p id="message"></p>
+    <!-- Status -->
+    <div class="space-y-2 text-lg">
+      <p>🔎 Searching For: <span id="statusTarget" class="font-semibold text-indigo-600"></span></p>
+      <p>📌 Result: <span id="statusResult" class="font-semibold text-blue-600"></span></p>
+      <p id="message" class="text-gray-700"></p>
+    </div>
 
-    <div id="arrayContainer"></div>
+    <!-- Array Visualization -->
+    <div id="arrayContainer" class="mt-6 flex flex-wrap justify-center gap-2"></div>
   </div>
 
   <script>
@@ -69,7 +58,7 @@ LINEAR SEARCH VS BINARY SEARCH
       container.innerHTML = '';
       arr.forEach((v,i)=>{
         let cell = document.createElement('div');
-        cell.className = 'cell';
+        cell.className = 'cell flex items-center justify-center w-12 h-12 border border-gray-400 rounded-lg text-sm font-semibold bg-white transition';
         cell.id = 'cell-'+i;
         cell.textContent = v;
         container.appendChild(cell);
@@ -79,14 +68,14 @@ LINEAR SEARCH VS BINARY SEARCH
     function resetColors(){
       arr.forEach((_,i)=>{
         let el = document.getElementById('cell-'+i);
-        if(el) el.className = 'cell';
+        if(el) el.className = 'cell flex items-center justify-center w-12 h-12 border border-gray-400 rounded-lg text-sm font-semibold bg-white transition';
       });
     }
 
     function colorCell(i, cls){
       let el = document.getElementById('cell-'+i);
       if(!el) return;
-      el.className = 'cell ' + cls;
+      el.className = 'cell flex items-center justify-center w-12 h-12 border border-gray-400 rounded-lg text-sm font-semibold text-black transition ' + cls;
     }
 
     function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
