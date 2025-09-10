@@ -1,0 +1,163 @@
+LINEAR SEARCH VS BINARY SEARCH
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Linear vs Binary Search — Simple Visualization</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 40px;
+    }
+    h2 { margin-bottom: 20px; }
+    input, button { margin: 5px; }
+    p { margin: 10px 0; }
+    #arrayContainer { margin-top: 20px; }
+    .cell {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 1px solid black;
+      margin: 2px;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 40px;
+    }
+    .checking { background: yellow; }
+    .checked { background: red; }
+    .found { background: lightgreen; }
+  </style>
+</head>
+<body>
+  <div>
+    <h2>Searching Sorted List</h2>
+
+    <div style="margin-bottom: 20px;">
+      <input id="targetInput" type="number" placeholder="Enter target" />
+      <button id="linearBtn">Linear Search</button>
+      <button id="binaryBtn">Binary Search</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <p>Searching For: <span id="statusTarget"></span></p>
+    <p>Result: <span id="statusResult"></span></p>
+    <p id="message"></p>
+
+    <div id="arrayContainer"></div>
+  </div>
+
+  <script>
+    let arr = [5,6,22,32,46,61,89,96,142,190,213,217,249,302,333,333];
+    let busy = false;
+
+    const container = document.getElementById('arrayContainer');
+    const targetInput = document.getElementById('targetInput');
+    const statusTarget = document.getElementById('statusTarget');
+    const statusResult = document.getElementById('statusResult');
+    const message = document.getElementById('message');
+
+    function renderArray(){
+      container.innerHTML = '';
+      arr.forEach((v,i)=>{
+        let cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.id = 'cell-'+i;
+        cell.textContent = v;
+        container.appendChild(cell);
+      });
+    }
+
+    function resetColors(){
+      arr.forEach((_,i)=>{
+        let el = document.getElementById('cell-'+i);
+        if(el) el.className = 'cell';
+      });
+    }
+
+    function colorCell(i, cls){
+      let el = document.getElementById('cell-'+i);
+      if(!el) return;
+      el.className = 'cell ' + cls;
+    }
+
+    function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+    async function linearSearch(target){
+      if(busy) return; busy = true;
+      resetColors();
+      statusTarget.textContent = target;
+      statusResult.textContent = '';
+      message.textContent = 'Starting Linear Search...';
+
+      for(let i=0;i<arr.length;i++){
+        colorCell(i,'checking');
+        await sleep(300);
+        if(arr[i] === target){
+          colorCell(i,'found');
+          statusResult.textContent = `Found at index ${i}`;
+          message.textContent = 'Element Found ✅';
+          busy = false; return;
+        } else {
+          colorCell(i,'checked');
+        }
+      }
+      statusResult.textContent = 'Not found';
+      message.textContent = 'Element Not Found ❌';
+      busy = false;
+    }
+
+    async function binarySearch(target){
+      if(busy) return; busy = true;
+      resetColors();
+      statusTarget.textContent = target;
+      statusResult.textContent = '';
+      message.textContent = 'Starting Binary Search...';
+
+      let low=0, high=arr.length-1;
+      while(low <= high){
+        let mid = Math.floor((low+high)/2);
+        colorCell(mid,'checking');
+        await sleep(500);
+        if(arr[mid] === target){
+          colorCell(mid,'found');
+          statusResult.textContent = `Found at index ${mid}`;
+          message.textContent = 'Element Found ✅';
+          busy = false; return;
+        } else if(arr[mid] < target){
+          for(let i=low;i<=mid;i++) colorCell(i,'checked');
+          low = mid+1;
+        } else {
+          for(let i=mid;i<=high;i++) colorCell(i,'checked');
+          high = mid-1;
+        }
+      }
+      statusResult.textContent = 'Not found';
+      message.textContent = 'Element Not Found ❌';
+      busy = false;
+    }
+
+    document.getElementById('linearBtn').addEventListener('click', ()=>{
+      let t = Number(targetInput.value);
+      if(!isNaN(t)) linearSearch(t);
+    });
+    document.getElementById('binaryBtn').addEventListener('click', ()=>{
+      let t = Number(targetInput.value);
+      if(!isNaN(t)) binarySearch(t);
+    });
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      busy = false; statusTarget.textContent=''; statusResult.textContent=''; message.textContent=''; renderArray();
+    });
+
+    renderArray();
+  </script>
+</body>
+</html>
